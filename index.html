@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Note Practice</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vexflow/4.2.5/vexflow-min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        #staff {
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+        }
+        .controls {
+            margin-bottom: 10px;
+        }
+        .controls label {
+            margin-right: 5px;
+        }
+        .controls select {
+            margin-right: 10px;
+        }
+        .clef-controls {
+            margin-top: 10px;
+        }
+        .display-options {
+            margin-top: 10px;
+        }
+        .display-options label {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Music Note Practice</h2>
+    <div class="controls">
+        <label for="timeSignature">Select Time Signature:</label>
+        <select id="timeSignature">
+            <option value="4/4">4/4</option>
+            <option value="3/4">3/4</option>
+        </select>
+        
+        <label for="numMeasures">Number of Measures:</label>
+        <select id="numMeasures">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+        <br><br>
+        <!-- Controls for Treble Clef -->
+        <div class="clef-controls">
+            <strong>Treble Clef:</strong>
+            <label for="chosenNoteTreble">Chosen Note:</label>
+            <select id="chosenNoteTreble">
+                <option value="a/3">A3</option>
+                <option value="b/3">B3</option>
+                <option value="c/4">Middle C (C4)</option>
+                <option value="d/4">D4</option>
+                <option value="e/4">E4</option>
+                <option value="f/4">F4</option>
+                <option value="g/4">G4</option>
+                <option value="a/4">A4</option>
+                <option value="b/4">B4</option>
+                <option value="c/5">C5</option>
+                <option value="d/5">D5</option>
+                <option value="e/5">E5</option>
+                <option value="f/5">F5</option>
+                <option value="g/5">G5</option>
+                <option value="a/5">A5</option>
+                <option value="b/5">B5</option>
+                <option value="c/6">C6</option>
+            </select>
+            
+            <label for="rangeAboveTreble">Levels Above:</label>
+            <select id="rangeAboveTreble">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            
+            <label for="rangeBelowTreble">Levels Below:</label>
+            <select id="rangeBelowTreble">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+        <br>
+        <!-- Controls for Bass Clef -->
+        <div class="clef-controls">
+            <strong>Bass Clef:</strong>
+            <label for="chosenNoteBass">Chosen Note:</label>
+            <select id="chosenNoteBass">
+                <option value="e/2">E2</option>
+                <option value="f/2">F2</option>
+                <option value="g/2">G2</option>
+                <option value="a/2">A2</option>
+                <option value="b/2">B2</option>
+                <option value="c/3">C3</option>
+                <option value="d/3">D3</option>
+                <option value="e/3">E3</option>
+                <option value="f/3">F3</option>
+                <option value="g/3">G3</option>
+                <option value="a/3">A3</option>
+                <option value="b/3">B3</option>
+                <option value="c/4">Middle C (C4)</option>
+                <option value="d/4">D4</option>
+                <option value="e/4">E4</option>
+            </select>
+            
+            <label for="rangeAboveBass">Levels Above:</label>
+            <select id="rangeAboveBass">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            
+            <label for="rangeBelowBass">Levels Below:</label>
+            <select id="rangeBelowBass">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+        <br>
+        <!-- Display Options for Clefs -->
+        <div class="display-options">
+            <label><input type="checkbox" id="showTreble" checked> Show Treble Clef</label>
+            <label><input type="checkbox" id="showBass" checked> Show Bass Clef</label>
+            <label><input type="checkbox" id="fullyRandom" onclick="generate()"> Fully random (beta)</label>
+        </div>
+    </div>
+    <button onclick="generate()">Generate</button>
+    <div id="staff"></div>
+
+    <script src="main.js"></script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91ac79671f86673d',t:'MTc0MTAzOTkzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>
