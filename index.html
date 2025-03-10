@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Music Note Practice</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vexflow/4.2.5/vexflow-min.js"></script>
+    <script>
+    if (typeof Vex === 'undefined') {
+        document.write('<script src="js/vexflow-min.js"><\/script>');
+    }
+    </script>
     <style>
         body {
             display: flex;
