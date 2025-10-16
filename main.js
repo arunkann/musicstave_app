@@ -459,12 +459,15 @@ function toggleMode(which) {
   const musicEl = document.getElementById("musicMode");
   if (!randomEl || !musicEl) return;
 
+  // Allow deselecting both. Enforce exclusivity only when the selected option is checked.
   if (which === "random") {
-    randomEl.checked = true;
-    musicEl.checked = false;
+    if (randomEl.checked) {
+      musicEl.checked = false;
+    }
   } else if (which === "music") {
-    musicEl.checked = true;
-    randomEl.checked = false;
+    if (musicEl.checked) {
+      randomEl.checked = false;
+    }
   }
   generate();
 }
