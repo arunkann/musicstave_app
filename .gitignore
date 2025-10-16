@@ -1,5 +1,6 @@
 # Cline local storage (do not commit)
 cline_storage/
+.cline_storage/
 
 # Node.js artifacts
 node_modules/
