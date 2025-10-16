@@ -17,14 +17,14 @@
   {
     "id": "1760575236742",
     "ulid": "01K7N7CAM6KSJX9ZTB0ARDSS37",
-    "ts": 1760576811784,
+    "ts": 1760579037289,
     "task": "review the code",
-    "tokensIn": 409627,
-    "tokensOut": 38306,
+    "tokensIn": 1290846,
+    "tokensOut": 82166,
     "cacheWrites": 0,
-    "cacheReads": 749952,
-    "totalCost": 0.9888377500000001,
-    "size": 568223,
+    "cacheReads": 3089408,
+    "totalCost": 2.8213934999999997,
+    "size": 1856238,
     "cwdOnTaskInitialization": "c:\\Users\\arunbala\\Documents\\personal\\musicstave_app",
     "isFavorited": false
   }

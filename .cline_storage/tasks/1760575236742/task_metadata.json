@@ -98,7 +98,7 @@
     },
     {
       "path": "index.html",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "cline_edited",
       "cline_read_date": 1760576432592,
       "cline_edit_date": 1760576432592,
@@ -106,7 +106,7 @@
     },
     {
       "path": "main.js",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "cline_edited",
       "cline_read_date": 1760576490833,
       "cline_edit_date": 1760576490833,
@@ -127,6 +127,86 @@
       "cline_read_date": 1760576741898,
       "cline_edit_date": 1760576741898,
       "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760577057128,
+      "cline_edit_date": 1760577057128,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760577435855,
+      "cline_edit_date": 1760577435855,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760577661371,
+      "cline_edit_date": 1760577661371,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "user_edited",
+      "cline_read_date": 1760577661371,
+      "cline_edit_date": 1760577661371,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760577929866,
+      "cline_edit_date": 1760577929866,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760577963988,
+      "cline_edit_date": 1760577963988,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760578026180,
+      "cline_edit_date": 1760578026180,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760578075827,
+      "cline_edit_date": 1760578075827,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760578527242,
+      "cline_edit_date": 1760578527242,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "main.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760578576047,
+      "cline_edit_date": 1760578576047,
+      "user_edit_date": 1760577858826
     }
   ],
   "model_usage": [

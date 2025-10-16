@@ -297,20 +297,34 @@ function renderStaff(measures, timeSignature) {
       // Prepare notes for both clefs.
       const trebleNotes = showTreble ? measures[i].treble.map(n => {
           if (n.isRest) {
-              return new StaveNote({ clef: "treble", keys: ["b/4"], duration: n.type });
+              const rest = new StaveNote({ clef: "treble", keys: ["b/4"], duration: n.type });
+              rest.setStave(trebleStave);
+              return rest;
           } else {
               const note = new StaveNote({ clef: "treble", keys: [n.pitch], duration: n.type });
               note.setStemDirection(getStemDirection("treble", n.pitch));
+              // Whole notes can be center-aligned by default, causing cross-staff misalignment.
+              // Disable center alignment so whole notes align with the tick context column.
+              if (n.type === "w" && typeof note.setCenterAlignment === "function") {
+                note.setCenterAlignment(false);
+              }
+              note.setStave(trebleStave);
               return note;
           }
       }) : [];
 
       const bassNotes = showBass ? measures[i].bass.map(n => {
           if (n.isRest) {
-              return new StaveNote({ clef: "bass", keys: ["d/3"], duration: n.type });
+              const rest = new StaveNote({ clef: "bass", keys: ["d/3"], duration: n.type });
+              rest.setStave(bassStave);
+              return rest;
           } else {
               const note = new StaveNote({ clef: "bass", keys: [n.pitch], duration: n.type });
               note.setStemDirection(getStemDirection("bass", n.pitch));
+              if (n.type === "w" && typeof note.setCenterAlignment === "function") {
+                note.setCenterAlignment(false);
+              }
+              note.setStave(bassStave);
               return note;
           }
       }) : [];
@@ -318,36 +332,53 @@ function renderStaff(measures, timeSignature) {
       // Create voices and format them together if both clefs are shown.
       if (showTreble && showBass && trebleNotes.length > 0 && bassNotes.length > 0) {
           const trebleVoice = new Voice({ num_beats: beats, beat_value: beatValue })
-              .setMode(Voice.Mode.SOFT)
+              .setStrict(false)
               .addTickables(trebleNotes);
           const bassVoice = new Voice({ num_beats: beats, beat_value: beatValue })
-              .setMode(Voice.Mode.SOFT)
+              .setStrict(false)
               .addTickables(bassNotes);
 
+          // Use a shared Formatter so treble & bass share the same TickContexts (column alignment).
           new Formatter()
-              .joinVoices([trebleVoice, bassVoice])
-              .format([trebleVoice, bassVoice], measureWidth - 50);
+            .joinVoices([trebleVoice, bassVoice])
+            .format([trebleVoice, bassVoice], measureWidth - 50);
 
-              const trebleTickables = trebleVoice.getTickables();
-              const bassTickables = bassVoice.getTickables();
-              const minLength = Math.min(trebleTickables.length, bassTickables.length);
-              
-              for (let idx = 0; idx < minLength; idx++) {
-                const trebleTickable = trebleTickables[idx];
-                const bassTickable = bassTickables[idx];
-              
-                const bassIsRest = typeof bassTickable.isRest === "function" && bassTickable.isRest();
-                const trebleIsRest = typeof trebleTickable.isRest === "function" && trebleTickable.isRest();
-              
-                if (bassIsRest || trebleIsRest) {
-                  console.log(`Skipping offset for column #${idx} because either bass or treble is a rest.`);
-                } else {
-                  const shift = 10; // Adjust as needed.
-                  bassTickable.setXShift(shift);
-                  console.log(`Bass note #${idx} shifted by ${shift}. New absolute x: ${bassTickable.getAbsoluteX()}`);
-                }
-              }
-              
+          // Extra alignment pass: align columns by cumulative beat positions across clefs.
+          // This is robust even when one voice has rests or different glyph widths.
+          const trebleTickables = trebleVoice.getTickables();
+          const bassTickables = bassVoice.getTickables();
+
+          // Build timelines of start beats for each tickable based on our underlying measure data.
+          const toBeatTimeline = (seq) => {
+            const timeline = [];
+            let acc = 0;
+            for (let k = 0; k < seq.length; k++) {
+              timeline.push({ beat: acc, idx: k });
+              acc += (typeof seq[k].duration === "number" ? seq[k].duration : (seq[k].type === "h" || seq[k].type === "hr") ? 2 : (seq[k].type === "w" || seq[k].type === "wr") ? 4 : 1);
+            }
+            return timeline;
+          };
+
+          const trebleTimeline = toBeatTimeline(measures[i].treble);
+          const bassTimeline = toBeatTimeline(measures[i].bass);
+
+          // Map beat -> index for quick lookup.
+          const trebleMap = new Map(trebleTimeline.map(({ beat, idx }) => [beat, idx]));
+          const bassMap = new Map(bassTimeline.map(({ beat, idx }) => [beat, idx]));
+
+          // For each beat present in both voices, align bass X to treble X.
+          const commonBeats = [...trebleMap.keys()].filter(b => bassMap.has(b));
+          for (const beat of commonBeats) {
+            const tIdx = trebleMap.get(beat);
+            const bIdx = bassMap.get(beat);
+            const tTick = trebleTickables[tIdx];
+            const bTick = bassTickables[bIdx];
+            if (tTick && bTick && typeof bTick.setXShift === "function") {
+              const shift = (tTick.getAbsoluteX() - bTick.getAbsoluteX());
+              bTick.setXShift((bTick.getXShift ? bTick.getXShift() : 0) + shift);
+            }
+          }
+
 
 
           // DEBUG: Log absolute x positions for each tickable after formatting.
@@ -364,7 +395,7 @@ function renderStaff(measures, timeSignature) {
       } else if (showTreble && trebleNotes.length > 0) {
           // Single treble staff
           const trebleVoice = new Voice({ num_beats: beats, beat_value: beatValue })
-              .setMode(Voice.Mode.SOFT)
+              .setStrict(false)
               .addTickables(trebleNotes);
 
           new Formatter().format([trebleVoice], measureWidth - 50);
@@ -378,7 +409,7 @@ function renderStaff(measures, timeSignature) {
       } else if (showBass && bassNotes.length > 0) {
           // Single bass staff
           const bassVoice = new Voice({ num_beats: beats, beat_value: beatValue })
-              .setMode(Voice.Mode.SOFT)
+              .setStrict(false)
               .addTickables(bassNotes);
 
           new Formatter().format([bassVoice], measureWidth - 50);
@@ -408,9 +439,10 @@ function generate() {
 
 if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof Vex !== 'undefined' && Vex.Flow) {
   try {
+    console.log('VexFlow version:', Vex.Flow.VERSION || Vex.Flow.version || 'unknown');
     generate();
   } catch (e) {
-    console.warn('Initial render skipped in non-browser or missing VexFlow:', e);
+    console.error('Initial render failed:', e && (e.stack || e.message || e));
   }
 }
 
