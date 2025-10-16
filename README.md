@@ -52,7 +52,7 @@ No build step is required. The app uses VexFlow via CDN.
   - `main.js` — core generation/rendering logic
   - `spec/` — Jasmine test(s)
   - `main.test.js` — Jest tests
-  - `.gitignore` — includes both `cline_storage/` and `.cline_storage/`
+  - `.gitignore`
 
 - Rendering details:
   - Stave notes are attached to their staves explicitly
@@ -75,7 +75,6 @@ No build step is required. The app uses VexFlow via CDN.
 ## Notes
 
 - This app focuses on sight‑reading practice for piano students; it intentionally keeps the UI simple and the rhythms basic (quarters/halves/wholes).
-- If you fork this repo, keep `cline_storage/` and `.cline_storage/` ignored; they’re tool-local state.
 
 ## Credits
 
