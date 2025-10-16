@@ -47,10 +47,137 @@ function generateRandomMeasure(beats) {
   return notes;
 }
 
+// Musical helpers to create more rhythmic, tonal phrases.
+function midiToClosestAllowedPitch(clef, targetMidi) {
+  const allowed = getAllowedPitches(clef);
+  if (!allowed || allowed.length === 0) return null;
+  let best = allowed[0];
+  let bestDist = Math.abs(pitchToMidi(best) - targetMidi);
+  for (let i = 1; i < allowed.length; i++) {
+    const dist = Math.abs(pitchToMidi(allowed[i]) - targetMidi);
+    if (dist < bestDist) {
+      best = allowed[i];
+      bestDist = dist;
+    }
+  }
+  return best;
+}
+
+function stepwiseNextPitch(prevPitch, clef) {
+  const allowed = getAllowedPitches(clef);
+  if (!prevPitch || allowed.length === 0) {
+    return getRandomPitch(clef);
+  }
+  const idx = allowed.indexOf(prevPitch);
+  // If prevPitch not in allowed (shouldn't happen), snap to closest by MIDI.
+  if (idx === -1) {
+    const snapped = midiToClosestAllowedPitch(clef, pitchToMidi(prevPitch));
+    const snappedIdx = allowed.indexOf(snapped);
+    return allowed[Math.max(0, Math.min(allowed.length - 1, snappedIdx))];
+  }
+  // Weighted step choices: -1, 0, +1 (mostly stepwise), occasional ±2 leap.
+  const choices = [-1, 0, +1, -2, +2];
+  const weights = [0.35, 0.2, 0.35, 0.05, 0.05];
+  const r = Math.random();
+  let acc = 0;
+  let offset = 0;
+  for (let i = 0; i < choices.length; i++) {
+    acc += weights[i];
+    if (r <= acc) {
+      offset = choices[i];
+      break;
+    }
+  }
+  const nextIdx = Math.max(0, Math.min(allowed.length - 1, idx + offset));
+  return allowed[nextIdx];
+}
+
+// Build a simple rhythmic pattern for a measure given total beats.
+// Only uses quarter, half, whole to match current renderer.
+function buildRhythmPattern(beats) {
+  const patternsByBeats = {
+    4: [
+      ["q", "q", "q", "q"],
+      ["h", "q", "q"],
+      ["q", "h", "q"],
+      ["h", "h"],
+      ["w"],
+    ],
+    3: [
+      ["q", "q", "q"],
+      ["h", "q"],
+      ["q", "h"],
+    ],
+  };
+  const patterns = patternsByBeats[beats] || [["q", "q", "q", "q"]];
+  return patterns[Math.floor(Math.random() * patterns.length)];
+}
+
+// Generate measures with musical phrasing: stepwise treble melody,
+// bass alternating root and fifth for simple harmonic support.
+function generateMusicalMeasures(beats, numMeasures) {
+  let measures = [];
+  const trebleCenter = document.getElementById("chosenNoteTreble")?.value || "c/4";
+  const bassCenter = document.getElementById("chosenNoteBass")?.value || "c/3";
+  const trebleCenterMidi = pitchToMidi(trebleCenter);
+  const bassCenterMidi = pitchToMidi(bassCenter);
+
+  for (let i = 0; i < numMeasures; i++) {
+    const rhythm = buildRhythmPattern(beats);
+
+    // Build treble line: start near center, move mostly stepwise.
+    let treblePrev = midiToClosestAllowedPitch("treble", trebleCenterMidi);
+    const trebleMeasure = rhythm.map((dur, idx) => {
+      // small chance to rest at end of phrase
+      const isPhraseRest = idx === rhythm.length - 1 && Math.random() < 0.15;
+      if (isPhraseRest) {
+        const restTypeMap = { "q": "qr", "h": "hr", "w": "wr" };
+        return { type: restTypeMap[dur] || "qr", isRest: true, duration: dur === "h" ? 2 : dur === "w" ? 4 : 1, clef: "treble", pitch: null };
+      }
+      const nextPitch = stepwiseNextPitch(treblePrev, "treble");
+      treblePrev = nextPitch;
+      const durationValue = dur === "h" ? 2 : dur === "w" ? 4 : 1;
+      return { type: dur, isRest: false, duration: durationValue, clef: "treble", pitch: nextPitch };
+    });
+
+    // Build bass line: alternate root and fifth, occasional third.
+    const bassFifthMidi = bassCenterMidi + 7; // perfect fifth up
+    const bassThirdMidi = bassCenterMidi + 4; // major third up (approx)
+    let useThird = Math.random() < 0.25;
+
+    const bassMeasure = rhythm.map((dur, idx) => {
+      const isPhraseRest = idx === rhythm.length - 1 && Math.random() < 0.1;
+      if (isPhraseRest) {
+        const restTypeMap = { "q": "qr", "h": "hr", "w": "wr" };
+        return { type: restTypeMap[dur] || "qr", isRest: true, duration: dur === "h" ? 2 : dur === "w" ? 4 : 1, clef: "bass", pitch: null };
+      }
+      let targetMidi;
+      if (useThird && idx % 4 === 2) {
+        targetMidi = bassThirdMidi;
+      } else {
+        targetMidi = idx % 2 === 0 ? bassCenterMidi : bassFifthMidi;
+      }
+      const pitch = midiToClosestAllowedPitch("bass", targetMidi) || getRandomPitch("bass");
+      const durationValue = dur === "h" ? 2 : dur === "w" ? 4 : 1;
+      return { type: dur, isRest: false, duration: durationValue, clef: "bass", pitch };
+    });
+
+    measures.push({ treble: trebleMeasure, bass: bassMeasure });
+  }
+
+  return measures;
+}
+
 // Generate measures based on the "Fully random (beta)" checkbox state.
 function generateRandomMeasures(beats, numMeasures) {
   const fullyRandom = document.getElementById("fullyRandom").checked;
+  const musicMode = document.getElementById("musicMode") && document.getElementById("musicMode").checked;
   let measures = [];
+
+  if (musicMode) {
+    // Generate musical, rhythmic measures with aligned voices.
+    return generateMusicalMeasures(beats, numMeasures);
+  }
 
   for (let i = 0; i < numMeasures; i++) {
       if (fullyRandom) {

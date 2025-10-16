@@ -18,7 +18,7 @@
     },
     {
       "path": "index.html",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "read_tool",
       "cline_read_date": 1760575306005,
       "cline_edit_date": null,
@@ -58,7 +58,7 @@
     },
     {
       "path": "main.js",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "cline_edited",
       "cline_read_date": 1760575646424,
       "cline_edit_date": 1760575646424,
@@ -90,10 +90,42 @@
     },
     {
       "path": "main.test.js",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "cline_edited",
       "cline_read_date": 1760575861082,
       "cline_edit_date": 1760575861082,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760576432592,
+      "cline_edit_date": 1760576432592,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760576490833,
+      "cline_edit_date": 1760576490833,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.test.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760576699633,
+      "cline_edit_date": 1760576699633,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.test.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760576741898,
+      "cline_edit_date": 1760576741898,
       "user_edit_date": null
     }
   ],

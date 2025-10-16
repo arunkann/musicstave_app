@@ -6,6 +6,7 @@ const {
   generateRandomMeasure,
   getAllowedPitches,
   getRandomPitch,
+  generateRandomMeasures,
 } = require('./main');
 
 beforeEach(() => {
@@ -20,6 +21,7 @@ beforeEach(() => {
     <select id="rangeBelowBass"><option value="0" selected>0</option></select>
 
     <input type="checkbox" id="fullyRandom" />
+    <input type="checkbox" id="musicMode" />
   `;
 });
 
@@ -104,5 +106,89 @@ describe('getRandomPitch', () => {
     const allowed = getAllowedPitches('bass');
     const pitch = getRandomPitch('bass');
     expect(allowed).toContain(pitch);
+  });
+});
+
+// New tests for Music mode
+describe('Music mode generation', () => {
+  function enableMusicMode() {
+    const mm = document.getElementById('musicMode');
+    if (mm) mm.checked = true;
+    const fr = document.getElementById('fullyRandom');
+    if (fr) fr.checked = false;
+  }
+
+  test('treble and bass rhythms align per column', () => {
+    enableMusicMode();
+    const measures = generateRandomMeasures(4, 2);
+    measures.forEach((m) => {
+      expect(m.treble.length).toBe(m.bass.length);
+      for (let i = 0; i < m.treble.length; i++) {
+        expect(m.treble[i].duration).toBe(m.bass[i].duration);
+        // Types may differ if one voice uses a rest at phrase end (e.g., 'h' vs 'hr').
+        // Alignment requires duration equality; allow type differences between note/rest glyphs.
+      }
+    });
+  });
+
+  test('treble motion is mostly stepwise with rare small leaps', () => {
+    enableMusicMode();
+    const measures = generateRandomMeasures(4, 1);
+    const trebleAllowed = getAllowedPitches('treble');
+    const idx = (p) => trebleAllowed.indexOf(p);
+    const trebleNotes = measures[0].treble.filter((n) => !n.isRest);
+
+    let bigLeaps = 0;
+    let leaps2 = 0;
+
+    for (let i = 1; i < trebleNotes.length; i++) {
+      const a = idx(trebleNotes[i - 1].pitch);
+      const b = idx(trebleNotes[i].pitch);
+      if (a >= 0 && b >= 0) {
+        const d = Math.abs(b - a);
+        if (d > 2) bigLeaps++;
+        else if (d === 2) leaps2++;
+      }
+    }
+
+    expect(bigLeaps).toBe(0);
+    // Allow a small number of ±2 leaps relative to length
+    expect(leaps2).toBeLessThanOrEqual(Math.max(1, Math.floor(trebleNotes.length / 5)));
+  });
+
+  test('bass pitches approximate root/fifth pattern and stay within allowed range', () => {
+    enableMusicMode();
+    const measures = generateRandomMeasures(4, 1);
+    const bassAllowed = getAllowedPitches('bass');
+    const center = document.getElementById('chosenNoteBass').value || 'c/3';
+    const centerMidi = pitchToMidi(center);
+    const fifthMidi = centerMidi + 7;
+    const thirdMidi = centerMidi + 4;
+
+    const bassNotes = measures[0].bass.filter((n) => !n.isRest);
+    bassNotes.forEach((n, idx) => {
+      expect(bassAllowed).toContain(n.pitch);
+      const m = pitchToMidi(n.pitch);
+      // Target for index: even->root, odd->fifth, occasionally third (test tolerant)
+      const targets = [centerMidi, fifthMidi, thirdMidi];
+      const minDist = Math.min(...targets.map((t) => Math.abs(m - t)));
+      // Within a few semitones of target (after snapping to allowed pitches)
+      expect(minDist).toBeLessThanOrEqual(3);
+    });
+  });
+
+  test('all generated pitches stay within allowed ranges', () => {
+    enableMusicMode();
+    const measures = generateRandomMeasures(3, 2);
+    measures.forEach((m) => {
+      const trebleAllowed = getAllowedPitches('treble');
+      const bassAllowed = getAllowedPitches('bass');
+      m.treble.forEach((n) => {
+        if (!n.isRest) expect(trebleAllowed).toContain(n.pitch);
+      });
+      m.bass.forEach((n) => {
+        if (!n.isRest) expect(bassAllowed).toContain(n.pitch);
+      });
+    });
   });
 });
