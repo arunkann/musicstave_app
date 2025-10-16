@@ -279,4 +279,24 @@ function generate() {
   renderStaff(measures, timeSignature);
 }
 
-generate();
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof Vex !== 'undefined' && Vex.Flow) {
+  try {
+    generate();
+  } catch (e) {
+    console.warn('Initial render skipped in non-browser or missing VexFlow:', e);
+  }
+}
+
+// Exports for tests (CommonJS)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    pitchToMidi,
+    getStemDirection,
+    generateRandomMeasure,
+    generateRandomMeasures,
+    getAllowedPitches,
+    getRandomPitch,
+    renderStaff,
+    generate
+  };
+}

@@ -1,0 +1,108 @@
+{
+  "files_in_context": [
+    {
+      "path": "package.json",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575269506,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575289529,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "active",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575306005,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "jest.config.js",
+      "record_state": "active",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575327191,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.test.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575337053,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "spec/main.spec.js",
+      "record_state": "active",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575379734,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "spec/support/jasmine.json",
+      "record_state": "active",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575397080,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760575646424,
+      "cline_edit_date": 1760575646424,
+      "user_edit_date": null
+    },
+    {
+      "path": "package.json",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1760575666066,
+      "cline_edit_date": null,
+      "user_edit_date": null
+    },
+    {
+      "path": "package.json",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760575696008,
+      "cline_edit_date": 1760575696008,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.test.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760575734696,
+      "cline_edit_date": 1760575734696,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.test.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760575861082,
+      "cline_edit_date": 1760575861082,
+      "user_edit_date": null
+    }
+  ],
+  "model_usage": [
+    {
+      "ts": 1760575236772,
+      "model_id": "gpt-5",
+      "model_provider_id": "openai-native",
+      "mode": "act"
+    }
+  ]
+}
