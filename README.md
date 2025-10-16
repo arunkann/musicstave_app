@@ -79,6 +79,7 @@ No build step is required. The app uses VexFlow via CDN.
 ## Credits
 
 - Rendering powered by [VexFlow](https://github.com/0xfe/vexflow).
+- Fully vibe-coded using LLM tools
 
 ## License
 
