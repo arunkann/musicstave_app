@@ -116,49 +116,65 @@ function buildRhythmPattern(beats) {
 // Generate measures with musical phrasing: stepwise treble melody,
 // bass alternating root and fifth for simple harmonic support.
 function generateMusicalMeasures(beats, numMeasures) {
+  // Less random: use one base rhythm and a repeating motif with small, bounded variation.
   let measures = [];
   const trebleCenter = document.getElementById("chosenNoteTreble")?.value || "c/4";
   const bassCenter = document.getElementById("chosenNoteBass")?.value || "c/3";
   const trebleCenterMidi = pitchToMidi(trebleCenter);
   const bassCenterMidi = pitchToMidi(bassCenter);
 
-  for (let i = 0; i < numMeasures; i++) {
-    const rhythm = buildRhythmPattern(beats);
+  // Deterministic base rhythm reused for all measures.
+  const baseRhythm = buildRhythmPattern(beats);
 
-    // Build treble line: start near center, move mostly stepwise.
-    let treblePrev = midiToClosestAllowedPitch("treble", trebleCenterMidi);
-    const trebleMeasure = rhythm.map((dur, idx) => {
-      // small chance to rest at end of phrase
-      const isPhraseRest = idx === rhythm.length - 1 && Math.random() < 0.15;
+  // Build a short melodic motif around the chosen treble center.
+  function buildMotif(clef, length) {
+    const allowed = getAllowedPitches(clef);
+    if (!allowed.length) return [];
+    let idx = allowed.indexOf(midiToClosestAllowedPitch(clef, clef === "treble" ? trebleCenterMidi : bassCenterMidi));
+    if (idx < 0) idx = Math.floor(allowed.length / 2);
+    const stepPattern = [0, +1, -1, 0, +1, 0]; // gentle stepwise contour
+    const motif = [];
+    for (let i = 0; i < length; i++) {
+      idx = Math.max(0, Math.min(allowed.length - 1, idx + stepPattern[i % stepPattern.length]));
+      motif.push(allowed[idx]);
+    }
+    return motif;
+  }
+
+  const trebleMotif = buildMotif("treble", baseRhythm.length);
+
+  // Bass support pattern: root, fifth, root, third (repeat)
+  const bassFifthMidi = bassCenterMidi + 7;
+  const bassThirdMidi = bassCenterMidi + 4;
+  const bassTargets = [bassCenterMidi, bassFifthMidi, bassCenterMidi, bassThirdMidi];
+
+  for (let i = 0; i < numMeasures; i++) {
+    // For variety, transpose motif by at most one step every other measure if possible.
+    const allowedTreble = getAllowedPitches("treble");
+    const transpose = (i % 2 === 1) ? (allowedTreble.length > 4 ? 1 : 0) : 0;
+
+    const trebleMeasure = baseRhythm.map((dur, idx) => {
+      const isPhraseRest = false; // make music mode steady (less rests) for stability
+      const durationValue = dur === "h" ? 2 : dur === "w" ? 4 : 1;
       if (isPhraseRest) {
         const restTypeMap = { "q": "qr", "h": "hr", "w": "wr" };
-        return { type: restTypeMap[dur] || "qr", isRest: true, duration: dur === "h" ? 2 : dur === "w" ? 4 : 1, clef: "treble", pitch: null };
+        return { type: restTypeMap[dur] || "qr", isRest: true, duration: durationValue, clef: "treble", pitch: null };
       }
-      const nextPitch = stepwiseNextPitch(treblePrev, "treble");
-      treblePrev = nextPitch;
-      const durationValue = dur === "h" ? 2 : dur === "w" ? 4 : 1;
-      return { type: dur, isRest: false, duration: durationValue, clef: "treble", pitch: nextPitch };
+      let pitch = trebleMotif[idx % trebleMotif.length];
+      // Apply tiny transposition if within allowed range
+      const pos = allowedTreble.indexOf(pitch);
+      if (transpose !== 0 && pos >= 0) {
+        const newPos = Math.max(0, Math.min(allowedTreble.length - 1, pos + transpose));
+        pitch = allowedTreble[newPos];
+      }
+      return { type: dur, isRest: false, duration: durationValue, clef: "treble", pitch };
     });
 
-    // Build bass line: alternate root and fifth, occasional third.
-    const bassFifthMidi = bassCenterMidi + 7; // perfect fifth up
-    const bassThirdMidi = bassCenterMidi + 4; // major third up (approx)
-    let useThird = Math.random() < 0.25;
-
-    const bassMeasure = rhythm.map((dur, idx) => {
-      const isPhraseRest = idx === rhythm.length - 1 && Math.random() < 0.1;
-      if (isPhraseRest) {
-        const restTypeMap = { "q": "qr", "h": "hr", "w": "wr" };
-        return { type: restTypeMap[dur] || "qr", isRest: true, duration: dur === "h" ? 2 : dur === "w" ? 4 : 1, clef: "bass", pitch: null };
-      }
-      let targetMidi;
-      if (useThird && idx % 4 === 2) {
-        targetMidi = bassThirdMidi;
-      } else {
-        targetMidi = idx % 2 === 0 ? bassCenterMidi : bassFifthMidi;
-      }
-      const pitch = midiToClosestAllowedPitch("bass", targetMidi) || getRandomPitch("bass");
+    const allowedBass = getAllowedPitches("bass");
+    const bassMeasure = baseRhythm.map((dur, idx) => {
       const durationValue = dur === "h" ? 2 : dur === "w" ? 4 : 1;
+      const targetMidi = bassTargets[idx % bassTargets.length];
+      const pitch = midiToClosestAllowedPitch("bass", targetMidi) || allowedBass[0] || "d/3";
       return { type: dur, isRest: false, duration: durationValue, clef: "bass", pitch };
     });
 
@@ -435,6 +451,22 @@ function generate() {
   console.log("Generated measures:", measures);
 
   renderStaff(measures, timeSignature);
+}
+
+// Ensure Music and More Random are mutually exclusive
+function toggleMode(which) {
+  const randomEl = document.getElementById("fullyRandom");
+  const musicEl = document.getElementById("musicMode");
+  if (!randomEl || !musicEl) return;
+
+  if (which === "random") {
+    randomEl.checked = true;
+    musicEl.checked = false;
+  } else if (which === "music") {
+    musicEl.checked = true;
+    randomEl.checked = false;
+  }
+  generate();
 }
 
 if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof Vex !== 'undefined' && Vex.Flow) {

@@ -3,10 +3,9 @@
 <!-- Edit this markdown file to update your focus chain focusChain list -->
 <!-- Use the format: - [ ] for incomplete items and - [x] for completed items -->
 
-- [x] Diagnose misalignment across measures
-- [x] Share TickContexts via single Formatter per measure
-- [x] Add cumulative-beat alignment pass (column sync)
-- [x] Ensure v3 compatibility (setStrict, setStave)
-- [x] Verify rendering
+- [x] Rename Music to Less Random
+- [x] Place Less Random before More Random in UI
+- [x] Keep mutual exclusivity via toggleMode()
+- [x] Verify tests remain unaffected
 
 <!-- Save this file and the focusChain list will be updated in the task -->

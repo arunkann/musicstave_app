@@ -138,7 +138,7 @@
     },
     {
       "path": "index.html",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "cline_edited",
       "cline_read_date": 1760577435855,
       "cline_edit_date": 1760577435855,
@@ -202,11 +202,35 @@
     },
     {
       "path": "main.js",
-      "record_state": "active",
+      "record_state": "stale",
       "record_source": "cline_edited",
       "cline_read_date": 1760578576047,
       "cline_edit_date": 1760578576047,
       "user_edit_date": 1760577858826
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760579376432,
+      "cline_edit_date": 1760579376432,
+      "user_edit_date": null
+    },
+    {
+      "path": "main.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760579498778,
+      "cline_edit_date": 1760579498778,
+      "user_edit_date": 1760577858826
+    },
+    {
+      "path": "index.html",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1760579655135,
+      "cline_edit_date": 1760579655135,
+      "user_edit_date": null
     }
   ],
   "model_usage": [

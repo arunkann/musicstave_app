@@ -175,8 +175,8 @@
         <div class="display-options">
             <label><input type="checkbox" id="showTreble" checked> Show Treble Clef</label>
             <label><input type="checkbox" id="showBass" checked> Show Bass Clef</label>
-            <label><input type="checkbox" id="fullyRandom" onclick="generate()"> Random</label>
-            <label><input type="checkbox" id="musicMode" onclick="generate()"> Music</label>
+            <label><input type="checkbox" id="musicMode" onclick="toggleMode('music')"> Less Random</label>
+            <label><input type="checkbox" id="fullyRandom" onclick="toggleMode('random')"> More Random</label>
         </div>
     </div>
     <button onclick="generate()">Generate</button>
